@@ -10,10 +10,11 @@ warnings.filterwarnings("ignore")
 path = "C:/Users/Lenovo/Desktop/RA/"
 df_total = pd.read_stata(path + "save_1后尚未被提取的.dta")
 
-# Set
-num = 100
+# Set the number [num] of each group of lenders, whose coordinates that we
+# want to crawl, as well as the start index and end index.
+num = 10
 start = 1
-end = 100  # end = start + num - 1
+end = 10  # end = start + num - 1
 
 # It is better for us to take 50 lenders as one group, and then we can
 # get locations (i.e., latitude & longitude) one group by one group.
@@ -22,7 +23,7 @@ end = 100  # end = start + num - 1
 # (Yeah, Google does not like users' auto crawling at all.)
 df = df_total.iloc[start - 1:end, ].reset_index(drop=True)
 df['lat'] = np.nan
-df['long'] = np.nan
+df['lon'] = np.nan
 df['flag'] = 1  # 0=unsuccessful, 1=successful
 
 
@@ -34,9 +35,6 @@ def get_lat_long(page_url):
     latitude = float(ls[0])
     longitude = float(ls[1])
     return latitude, longitude
-
-
-driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe")
 
 # If '/search/' is within current page url, it indicates that we do not get the result.
 # Moreover, if we obtain the result successfully, '/place/' must appear in the url scraped by Python.
@@ -50,23 +48,26 @@ for i_ in range(num):
         url = 'https://www.google.com/maps/search/' + '{}, India'.format(city_)
 
     driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe")
-    driver.get(url)
+    # driver.set_window_size(100, 100)
     sleep(3)
+    driver.get(url)
+    sleep(6.1 + np.random.normal(loc=0, scale=0.89))
     currentPageUrl = driver.current_url
-    sleep(5)
+    sleep(5 + np.random.normal(loc=-.89, scale=0.89))
     driver.close()
 
     if ('/search/' not in currentPageUrl) and ('/place/' in currentPageUrl):
 
-        lat, long = get_lat_long(currentPageUrl)
+        lat, lon = get_lat_long(currentPageUrl)
         df.iloc[i_, 3] = lat
-        df.iloc[i_, 4] = long
+        df.iloc[i_, 4] = lon
 
     else:
 
         df.iloc[i_, 5] = 0
 
-    sleep(8)
+    sleep(2)
 
 df_1 = df[df['flag'] == 1]  # df_1: restore lenders whose locations have been detected
 df_2 = df[df['flag'] == 0]  # df_2: restore lenders whose locations haven't been detected
+# df_1.to_stata('TEST.dta')
