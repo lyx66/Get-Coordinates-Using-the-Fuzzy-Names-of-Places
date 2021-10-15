@@ -16,15 +16,19 @@ warnings.filterwarnings("ignore")
 # The function below is defined to extract both latitude and longitude from one expected url.
 def get_lat_long(page_url):
     ls = page_url.split('@')[1].split(',')
-    latitude = ls[0]
-    longitude = ls[1]
+    latitude = float(ls[0])
+    longitude = float(ls[1])
     return latitude, longitude
 
+# Force Google to show website in English.
+options = webdriver.EdgeOptions()
+options.add_argument('lang=en_US')
 
-driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe")
+driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe",
+                        options=options)
 Url_With_Coordinates = []
 
-url = 'https://www.google.com/maps/search/' + '{}, India'.format('Kutch')
+url = 'https://www.google.co.uk/maps/search/' + '{}, India'.format('Fatehgarh Sahib, Pradesh')
 driver.get(url)
 sleep(3)
 currentPageUrl = driver.current_url
