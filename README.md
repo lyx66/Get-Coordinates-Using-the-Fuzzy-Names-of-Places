@@ -1,4 +1,4 @@
-# Get-Coordinates-Using-the-Names-of-Places
+# Get-Coordinates-Using-the-Fuzzy-Names-of-Places
 by *Yingxin LIN*
 ### - This code is used to get coordinates (i.e., *latitude and longitude*) of some places using their fuzzy names. 
 ### - The coordinates will be scrapied from Google Maps.
