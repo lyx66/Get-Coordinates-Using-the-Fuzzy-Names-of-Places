@@ -36,6 +36,10 @@ def get_lat_long(page_url):
     longitude = float(ls[1])
     return latitude, longitude
 
+# Force Google to show website in English.
+options = webdriver.EdgeOptions()
+options.add_argument('lang=en_US')
+
 # If '/search/' is within current page url, it indicates that we do not get the result.
 # Moreover, if we obtain the result successfully, '/place/' must appear in the url scraped by Python.
 
@@ -43,11 +47,12 @@ for i_ in range(num):
     city_ = df.iloc[i_, 1]
     state_ = df.iloc[i_, 2]
     if state_ != "\n":
-        url = 'https://www.google.com/maps/search/' + '{}, {}, India'.format(city_, state_)
+        url = 'https://www.google.co.uk/maps/search/' + '{}, {}, India'.format(city_, state_)
     else:
-        url = 'https://www.google.com/maps/search/' + '{}, India'.format(city_)
+        url = 'https://www.google.co.uk/maps/search/' + '{}, India'.format(city_)
 
-    driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe")
+    driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe",
+                            options=options)
     # driver.set_window_size(100, 100)
     sleep(3)
     driver.get(url)
