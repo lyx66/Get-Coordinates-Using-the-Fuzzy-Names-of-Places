@@ -13,9 +13,9 @@ df_total = pd.read_stata(path + "lender_cleaned.dta")
 # Set the number [num] of each group of lenders, whose coordinates that we
 # want to crawl, as well as the start index and end index.
 num = 100  # When program has got [num] lenders' coordinates, it will take a rest for about 5 min.
-total_num = 200  # total_num = end - start + 1
-start = 5001
-end = 5200  # end = start + total_num - 1
+total_num = 100  # total_num = end - start + 1
+start = 5501
+end = 5600  # end = start + total_num - 1
 # file_name_1 = "df_1_{}_{}.dta".format(start, end)
 # file_name_2 = "df_2_{}_{}.dta".format(start, end)
 
@@ -73,7 +73,14 @@ for j_ in range(n_group):
             pass
         # driver.set_window_size(100, 100)
         sleep(8 + np.random.normal(loc=0, scale=1.26))
-        driver.get(url)
+        try:
+            driver.get(url)
+        except Exception:
+            print('Error occupies, when trying to visit Google.')
+            sleep(20 + np.random.normal(loc=0, scale=1.26))
+            driver.get(url)
+        else:
+            pass
         sleep(8 + np.random.normal(loc=0, scale=0.09))
         currentPageUrl = driver.current_url
         # sleep(5 + np.random.normal(loc=-.89, scale=0.89))
@@ -91,14 +98,16 @@ for j_ in range(n_group):
             print('Not Found.')
 
         if i_ == 50:
-            sleep(50)
+            sleep(60)
 
     df_1 = df[df['flag'] == 1]  # df_1: restore lenders whose locations have been detected
     df_2 = df[df['flag'] == 0]  # df_2: restore lenders whose locations haven't been detected
+
     file_name_1_ = "df_1_{}_{}.dta".format(start_ + 1, end_)
     file_name_2_ = "df_2_{}_{}.dta".format(start_ + 1, end_)
     df_1.to_stata(path_save + file_name_1_)
     df_2.to_stata(path_save + file_name_2_)
 
     if j_ < n_group - 1:
-        sleep(100)
+        print('Now let us take a rest!')
+        sleep(260)
