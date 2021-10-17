@@ -1,11 +1,15 @@
 from selenium import webdriver
 from time import sleep
+import time
 import pandas as pd
 import numpy as np
 
 # Filter all the warnings.
 import warnings
+
 warnings.filterwarnings("ignore")
+
+start = time.clock()
 
 path = "C:/Users/Lenovo/Desktop/RA/"
 df_total = pd.read_stata(path + "lender_cleaned.dta")
@@ -14,8 +18,10 @@ df_total = pd.read_stata(path + "lender_cleaned.dta")
 # want to crawl, as well as the start index and end index.
 num = 100  # When program has got [num] lenders' coordinates, it will take a rest for about 5 min.
 total_num = 100  # total_num = end - start + 1
-start = 5501
-end = 5600  # end = start + total_num - 1
+start = 5701
+end = 5800  # end = start + total_num - 1
+
+
 # file_name_1 = "df_1_{}_{}.dta".format(start, end)
 # file_name_2 = "df_2_{}_{}.dta".format(start, end)
 
@@ -26,7 +32,6 @@ end = 5600  # end = start + total_num - 1
 # (Yeah, Google does not like users' auto crawling at all.)
 
 
-
 # A example of expected url:
 # 'https://www.google.com/maps/place/%E5%8D%B0%E5%BA%A6%E5%8F%A4%E5%90%89%E6%8B%89%E7%89%B9%E9%82%A6%E5%8D%A1%E5%A5%87/@23.7124049,69.9228488,8z/data=!3m1!4b1!4m5!3m4!1s0x39511e0750db4489:0x2049bf8ec25dea88!8m2!3d23.7337326!4d69.8597406'
 # The function below is defined to extract both latitude and longitude from one expected url.
@@ -35,6 +40,7 @@ def get_lat_long(page_url):
     latitude = float(ls[0])
     longitude = float(ls[1])
     return latitude, longitude
+
 
 # Force Google to show website in English.
 options = webdriver.EdgeOptions()
@@ -49,7 +55,7 @@ for j_ in range(n_group):
     end_ = start + (j_ + 1) * num - 1
     print(start_ + 1)
     print(end_)
-    df = df_total.iloc[start_:end_, ]\
+    df = df_total.iloc[start_:end_, ] \
         .reset_index(drop=True)
     df['lat'] = np.nan
     df['lon'] = np.nan
@@ -65,10 +71,10 @@ for j_ in range(n_group):
 
         try:
             driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe",
-                                options=options)
+                                    options=options)
         except Exception:
             driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe",
-                                options=options)
+                                    options=options)
         else:
             pass
         # driver.set_window_size(100, 100)
@@ -77,7 +83,11 @@ for j_ in range(n_group):
             driver.get(url)
         except Exception:
             print('Error occupies, when trying to visit Google.')
-            sleep(20 + np.random.normal(loc=0, scale=1.26))
+            print("\nDon't worry, Python will try to re-connect in 30 seconds.")
+            driver.close()
+            sleep(30 + np.random.normal(loc=0, scale=1.26))
+            driver = webdriver.Edge(executable_path=r"C:\Users\Lenovo\Desktop\RA\MicrosoftWebDriver.exe",
+                                    options=options)
             driver.get(url)
         else:
             pass
@@ -111,3 +121,7 @@ for j_ in range(n_group):
     if j_ < n_group - 1:
         print('Now let us take a rest!')
         sleep(260)
+
+
+end = time.clock()
+print('Running time: %s Seconds' % (end-start))
