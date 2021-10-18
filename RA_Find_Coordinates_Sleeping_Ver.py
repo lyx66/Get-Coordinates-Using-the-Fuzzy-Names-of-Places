@@ -1,6 +1,5 @@
 from selenium import webdriver
 from time import sleep
-import time
 import pandas as pd
 import numpy as np
 
@@ -9,7 +8,6 @@ import warnings
 
 warnings.filterwarnings("ignore")
 
-start_time = time.clock()
 
 path = "C:/Users/Lenovo/Desktop/RA/"
 df_total = pd.read_stata(path + "lender_cleaned.dta")
@@ -18,8 +16,8 @@ df_total = pd.read_stata(path + "lender_cleaned.dta")
 # want to crawl, as well as the start index and end index.
 num = 100  # When program has got [num] lenders' coordinates, it will take a rest for about 5 min.
 total_num = 100  # total_num = end - start + 1
-start = 5801
-end = 5900  # end = start + total_num - 1
+start = 3001
+end = 3100  # end = start + total_num - 1
 
 
 # file_name_1 = "df_1_{}_{}.dta".format(start, end)
@@ -122,6 +120,3 @@ for j_ in range(n_group):
         print('Now let us take a rest!')
         sleep(260)
 
-
-end_time = time.clock()
-print('Running time: %s Seconds' % (end_time - start_time))
